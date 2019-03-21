@@ -5,16 +5,19 @@ const List = props => {
     <React.Fragment>
       <div className="list">
         <table className="list-table">
-          <tr>
-            <td>
-              {props.task &&
-                props.task.map((task, i) => <p key={i}>{task.title}</p>)}
-            </td>
-            <td>
-              {props.task &&
-                props.task.map((task, i) => <p key={i}>{task.content}</p>)}
-            </td>
-          </tr>
+          <tbody>
+            {props.task &&
+              props.task.map((task, i) => (
+                <tr key={i}>
+                  <td>
+                    <p>{task.title}</p>
+                  </td>
+                  <td>
+                    <p>{task.content}</p>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
         </table>
       </div>
     </React.Fragment>

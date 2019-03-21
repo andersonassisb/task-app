@@ -3,51 +3,56 @@ import React, { Component } from "react";
 class Insert extends Component {
   state = {
     title: "",
-    content: "",
-    status: ""
+    content: ""
   };
 
-  getDb(statusBool) {
-    try {
-      this.global.db.collection("task").insert({
+  updateList = () => this.props.updateList();
+
+  insertTask = e => {
+    e.preventDefault();
+    const statusBool = true;
+
+    fetch("http://localhost:3030/tasks/insert", {
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
         title: this.state.title,
         content: this.state.content,
         status: statusBool
-      });
-    } catch (err) {
-      console.log({ error: "insert failed" });
-    }
-  }
-
-  insertTask() {
-    try {
-      const statusBool = this.state.status === "true";
-      this.getDb(statusBool);
-    } catch (err) {
-      console.log({ error: "insert failed" });
-    }
-  }
+      })
+    }).then(response => {
+      console.log(response.status);
+      if (response.status !== 200) {
+        console.log("deu merda");
+      } else {
+        this.updateList();
+      }
+    });
+  };
 
   render() {
     return (
       <React.Fragment>
         <div className="insert">
-          <input
-            type="text"
-            className="title"
-            onInput={e => this.setState({ title: e.target.value })}
-          />
-          <input
-            type="text"
-            className="content"
-            onInput={e => this.setState({ content: e.target.value })}
-          />
-          <input
-            type="text"
-            className="status"
-            onInput={e => this.setState({ status: e.target.value })}
-          />
-          <button onClick={() => this.insertTask()}>+</button>
+          <form onSubmit={e => this.insertTask(e)}>
+            <input
+              type="text"
+              className="title"
+              onInput={e => this.setState({ title: e.target.value })}
+              placeholder="Title"
+              required
+            />
+            <input
+              type="text"
+              className="content"
+              onInput={e => this.setState({ content: e.target.value })}
+              placeholder="Description"
+            />
+            <button type="submit">+</button>
+          </form>
         </div>
       </React.Fragment>
     );

@@ -29,7 +29,7 @@ class App extends Component {
     return (
       <React.Fragment>
         <Header title="Tasks" />
-        <Insert />
+        <Insert updateList={this.getTasks} />
         <List task={tasks.length > 0 && tasks} />
       </React.Fragment>
     );
