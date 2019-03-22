@@ -30,7 +30,7 @@ class App extends Component {
       <React.Fragment>
         <Header title="Tasks" />
         <Insert updateList={this.getTasks} />
-        <List task={tasks.length > 0 && tasks} />
+        <List updateList={this.getTasks} task={tasks.length > 0 && tasks} />
       </React.Fragment>
     );
   }

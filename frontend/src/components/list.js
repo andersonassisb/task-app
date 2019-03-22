@@ -1,27 +1,77 @@
-import React from "react";
+import React, { Component } from "react";
+import Delete from "./delete";
+import swal from "sweetalert";
 
-const List = props => {
-  return (
-    <React.Fragment>
-      <div className="list">
-        <table className="list-table">
-          <tbody>
-            {props.task &&
-              props.task.map((task, i) => (
-                <tr key={i}>
-                  <td>
-                    <p>{task.title}</p>
-                  </td>
-                  <td>
-                    <p>{task.content}</p>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
-    </React.Fragment>
-  );
-};
+class List extends Component {
+  updateList = () => this.props.updateList();
+
+  deleteTask = taskId => {
+    console.log(taskId);
+    swal({
+      title: "Are you sure?",
+      text: "Once deleted, you will not be able to recover this task!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true
+    }).then(willDelete => {
+      if (willDelete) {
+        fetch("http://localhost:3030/tasks/delete", {
+          method: "post",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            id: taskId
+          })
+        }).then(response => {
+          swal("The task has been deleted!", {
+            icon: "success"
+          });
+          if (response.status !== 200) {
+            console.log("Problem encontred!");
+          } else {
+            this.updateList();
+          }
+        });
+      } else {
+        swal("Delete task cancel!");
+      }
+    });
+  };
+
+  render() {
+    return (
+      <React.Fragment>
+        <div className="list">
+          <table className="list-table">
+            <tbody>
+              {this.props.task &&
+                this.props.task.map((taskItem, i) => (
+                  <tr key={i}>
+                    <td className="task-title align-middle text-center">
+                      <p>{taskItem.title}</p>
+                    </td>
+                    <td className="task-content align-middle text-center">
+                      <p>{taskItem.content}</p>
+                    </td>
+                    <td className="task-img align-middle text-center">
+                      <img
+                        onClick={() => {
+                          this.deleteTask(taskItem._id);
+                        }}
+                        src={"/delete.png"}
+                        alt={i}
+                      />
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      </React.Fragment>
+    );
+  }
+}
 
 export default List;

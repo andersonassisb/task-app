@@ -26,7 +26,7 @@ class Insert extends Component {
     }).then(response => {
       console.log(response.status);
       if (response.status !== 200) {
-        console.log("deu merda");
+        console.log("Problem encontred!");
       } else {
         this.updateList();
       }

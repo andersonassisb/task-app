@@ -52,6 +52,44 @@ app.get('/tasks/:title', async (req, res) => {
   }
 });
 
+app.post('/tasks/delete', (req, res) => {
+  const { id } = req.body;
+
+  const tasks = db
+    .collection('task')
+    .find()
+    .toArray();
+  const delTask = tasks.filter(task => task._id.includes(id));
+  //  console.log(delTask);
+
+  if (!delTask) {
+    res.status(400);
+    res.json({ error: 'Task not found' });
+  } else {
+    const deleteTask = db.collection('task').deleteOne(delTask);
+    if (deleteTask) {
+      res.json({ delTask });
+    } else {
+      res.json({ error: 'Unable to delete into database' });
+    }
+  }
+});
+
+app.get('/tasks/:title', async (req, res) => {
+  try {
+    const taskDb = await db
+      .collection('task')
+      .find()
+      .toArray();
+    const taskReceived = taskDb.filter(task =>
+      task.title.toLowerCase().includes(req.params.title.toLowerCase())
+    );
+    res.json(taskReceived);
+  } catch (err) {
+    res.json({ error: 'Task not found.' });
+  }
+});
+
 app.get('/tasks', async (req, res) => {
   const task = await db
     .collection('task')
