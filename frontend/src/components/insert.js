@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { timingSafeEqual } from "crypto";
 
 class Insert extends Component {
   state = {
@@ -24,11 +25,11 @@ class Insert extends Component {
         status: statusBool
       })
     }).then(response => {
-      console.log(response.status);
       if (response.status !== 200) {
         console.log("Problem encontred!");
       } else {
         this.updateList();
+        this.setState({ title: "", content: "" });
       }
     });
   };
@@ -41,14 +42,16 @@ class Insert extends Component {
             <input
               type="text"
               className="title"
-              onInput={e => this.setState({ title: e.target.value })}
+              onChange={e => this.setState({ title: e.target.value })}
               placeholder="Title"
+              value={this.state.title}
               required
             />
             <input
               type="text"
               className="content"
-              onInput={e => this.setState({ content: e.target.value })}
+              onChange={e => this.setState({ content: e.target.value })}
+              value={this.state.content}
               placeholder="Description"
             />
             <button type="submit">+</button>

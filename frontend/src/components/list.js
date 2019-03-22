@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import Delete from "./delete";
 import swal from "sweetalert";
+import { FaRegWindowClose } from "react-icons/fa";
 
 class List extends Component {
   updateList = () => this.props.updateList();
 
   deleteTask = taskId => {
-    console.log(taskId);
     swal({
       title: "Are you sure?",
       text: "Once deleted, you will not be able to recover this task!",
@@ -25,12 +24,12 @@ class List extends Component {
             id: taskId
           })
         }).then(response => {
-          swal("The task has been deleted!", {
-            icon: "success"
-          });
           if (response.status !== 200) {
             console.log("Problem encontred!");
           } else {
+            swal("The task has been deleted!", {
+              icon: "success"
+            });
             this.updateList();
           }
         });
@@ -56,13 +55,13 @@ class List extends Component {
                       <p>{taskItem.content}</p>
                     </td>
                     <td className="task-img align-middle text-center">
-                      <img
+                      <div
                         onClick={() => {
                           this.deleteTask(taskItem._id);
                         }}
-                        src={"/delete.png"}
-                        alt={i}
-                      />
+                      >
+                        <FaRegWindowClose />
+                      </div>
                     </td>
                   </tr>
                 ))}

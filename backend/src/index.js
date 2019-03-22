@@ -1,4 +1,5 @@
 require('dotenv').config();
+const mongo = require('mongodb');
 const MongoClient = require('mongodb').MongoClient;
 const express = require('express');
 const cors = require('cors');
@@ -52,27 +53,28 @@ app.get('/tasks/:title', async (req, res) => {
   }
 });
 
-app.post('/tasks/delete', (req, res) => {
+app.post('/tasks/delete', async (req, res) => {
   const { id } = req.body;
 
-  const tasks = db
-    .collection('task')
-    .find()
-    .toArray();
-  const delTask = tasks.filter(task => task._id.includes(id));
-  //  console.log(delTask);
+  db.collection('task', (err, collection) => {
+    collection.deleteOne({ _id: new mongo.ObjectId(id) }, (err, result) => {
+      if (!err) {
+        res.status(200);
+        res.json({ delete: true });
+      } else {
+        res.status(400);
+        res.json({ delete: false });
+      }
+    });
+  });
 
+  /*
   if (!delTask) {
     res.status(400);
     res.json({ error: 'Task not found' });
   } else {
-    const deleteTask = db.collection('task').deleteOne(delTask);
-    if (deleteTask) {
-      res.json({ delTask });
-    } else {
-      res.json({ error: 'Unable to delete into database' });
-    }
-  }
+    res.json({ delTask });
+  } */
 });
 
 app.get('/tasks/:title', async (req, res) => {
