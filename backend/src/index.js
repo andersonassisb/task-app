@@ -38,7 +38,7 @@ app.post('/tasks/insert', (req, res) => {
   }
 });
 
-app.get('/tasks/:title', async (req, res) => {
+/*app.get('/tasks/:title', async (req, res) => {
   try {
     const taskDb = await db
       .collection('task')
@@ -51,7 +51,7 @@ app.get('/tasks/:title', async (req, res) => {
   } catch (err) {
     res.json({ error: 'Task not found.' });
   }
-});
+});*/
 
 app.post('/tasks/delete', async (req, res) => {
   const { id } = req.body;
@@ -67,30 +67,47 @@ app.post('/tasks/delete', async (req, res) => {
       }
     });
   });
-
-  /*
-  if (!delTask) {
-    res.status(400);
-    res.json({ error: 'Task not found' });
-  } else {
-    res.json({ delTask });
-  } */
 });
 
-app.get('/tasks/:title', async (req, res) => {
-  try {
-    const taskDb = await db
-      .collection('task')
-      .find()
-      .toArray();
-    const taskReceived = taskDb.filter(task =>
-      task.title.toLowerCase().includes(req.params.title.toLowerCase())
-    );
-    res.json(taskReceived);
-  } catch (err) {
-    res.json({ error: 'Task not found.' });
-  }
+app.get('/tasks/delete_all', async (req, res) => {
+  db.collection('task', (err, collection) => {
+    collection.deleteMany({}, (err, result) => {
+      if (!err) {
+        res.status(200);
+        res.json({ deleteAll: true });
+      } else {
+        res.status(400);
+        res.json({ deleteAll: false });
+      }
+    });
+  });
 });
+
+app.post('/tasks/edit', async (req, res) => {
+  const { id } = req.body;
+
+  db.collection('task', (err, collection) => {
+    collection.updateOne({ _id: new mongo.ObjectId(id) }, (err, result) => {
+      if (!err) {
+        res.status(200);
+        res.json({ update: true });
+      } else {
+        res.status(400);
+        res.json({ update: false });
+      }
+    });
+  });
+});
+
+/*app.get('/tasks/:id', async (req, res) => {
+  const { id } = req.params.id;
+  const taskDb = await db
+    .collection('task')
+    .find()
+    .toArray();
+  const taskReceived = taskDb.filter(task => task._id.includes(req.params.id));
+  console.log(taskReceived);
+});*/
 
 app.get('/tasks', async (req, res) => {
   const task = await db

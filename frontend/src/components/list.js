@@ -1,9 +1,28 @@
 import React, { Component } from "react";
 import swal from "sweetalert";
 import { FaRegWindowClose } from "react-icons/fa";
+import { FaRegEdit } from "react-icons/fa";
+import Edit from "./edit.js";
 
 class List extends Component {
+  state = {
+    tasks: [],
+    id: ""
+  };
   updateList = () => this.props.updateList();
+
+  deleteAllTasks = () => {
+    fetch("http://localhost:3030/tasks/delete_all").then(response => {
+      if (response.status !== 200) {
+        console.log("Problem encontred!");
+      } else {
+        swal("All tasks has been deleted!", {
+          icon: "success"
+        });
+        this.updateList();
+      }
+    });
+  };
 
   deleteTask = taskId => {
     swal({
@@ -39,15 +58,29 @@ class List extends Component {
     });
   };
 
+  editTask = taskId => {
+    this.setState({ id: taskId });
+  };
+
   render() {
     return (
       <React.Fragment>
         <div className="list">
+          {this.props.task.length > 0 && (
+            <div
+              onClick={() => {
+                this.deleteAllTasks();
+              }}
+            >
+              <FaRegWindowClose />
+            </div>
+          )}
           <table className="list-table">
             <tbody>
               {this.props.task &&
                 this.props.task.map((taskItem, i) => (
                   <tr key={i}>
+                    <td className="task-status align-middle text-center" />
                     <td className="task-title align-middle text-center">
                       <p>{taskItem.title}</p>
                     </td>
@@ -63,11 +96,21 @@ class List extends Component {
                         <FaRegWindowClose />
                       </div>
                     </td>
+                    <td className="task-img align-middle text-center">
+                      <div
+                        onClick={() => {
+                          this.editTask(taskItem._id);
+                        }}
+                      >
+                        <FaRegEdit />
+                      </div>
+                    </td>
                   </tr>
                 ))}
             </tbody>
           </table>
         </div>
+        <div>{this.state.id !== "" && <Edit editTask={this.state.id} />}</div>
       </React.Fragment>
     );
   }

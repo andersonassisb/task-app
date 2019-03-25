@@ -54,7 +54,7 @@ class Insert extends Component {
               value={this.state.content}
               placeholder="Description"
             />
-            <button type="submit">+</button>
+            <button type="submit">Add</button>
           </form>
         </div>
       </React.Fragment>
