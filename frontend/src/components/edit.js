@@ -4,55 +4,64 @@ import swal from "sweetalert";
 
 class Edit extends Component {
   state = {
+    id: "",
     title: "",
     content: "",
     pass: false
   };
-
-  taskId = () => this.props.editTask;
+  hideComponentsWhenInserting = pass => this.props.disable(pass);
 
   getTaskId = () => {
-    fetch(`http://localhost:3030/tasks/${this.taskId()}`)
+    this.setState({ id: this.props.editTask });
+    fetch(`http://localhost:3030/tasks/${this.props.editTask}`)
       .then(response => response.json())
-      .then(taskItem =>
+      .then(taskItem => {
         this.setState({
-          title: taskItem.title,
-          content: taskItem.content,
+          title: taskItem[0].title,
+          content: taskItem[0].content,
           pass: true
-        })
-      );
+        });
+      });
   };
 
+  componentDidMount() {
+    this.getTaskId();
+  }
+
   updateTask = e => {
-    const { title, content, pass } = this.state;
+    const { id, title, content, pass } = this.state;
     e.preventDefault();
 
-    pass === true &&
-      fetch("http://localhost:3030/tasks/edit", {
+    pass &&
+      fetch("http://localhost:3030/tasks/update", {
         method: "post",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
+          _id: id,
           title: title,
-          content: content
+          content: content,
+          status: pass
         })
       }).then(response => {
         if (response.status !== 200) {
           console.log("Problem encontred!");
         } else {
-          swal("Updated task!");
-          this.setState({ title: "", content: "" });
+          this.setState({ pass: true });
+          swal("Updated task!").then(willConfirm => {
+            if (willConfirm) window.location.reload();
+          });
+          //this.hideComponentsWhenInserting(true);
         }
       });
   };
 
   render() {
-    //console.log(this.taskEdit());
     return (
       <React.Fragment>
-        {this.taskId() && (
+        {this.props.editTask && (
           <div className="edit">
             <form onSubmit={e => this.updateTask(e)}>
               <input
@@ -60,7 +69,7 @@ class Edit extends Component {
                 className="title"
                 onChange={e => this.setState({ title: e.target.value })}
                 placeholder="Title"
-                value={this.state.title && this.state.title}
+                defaultValue={this.state.title}
                 required
               />
               <input
@@ -68,7 +77,7 @@ class Edit extends Component {
                 className="content"
                 onChange={e => this.setState({ content: e.target.value })}
                 placeholder="Description"
-                value={this.state.content && this.state.content}
+                defaultValue={this.state.content}
               />
               <button type="submit">Save</button>
             </form>

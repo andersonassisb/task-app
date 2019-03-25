@@ -8,14 +8,31 @@ import { FaSpinner } from "react-icons/fa";
 
 class App extends Component {
   state = {
+    disableComponents: true,
     loading: true,
     tasks: [],
     activedTasks: false,
     completedTasks: false,
-    selectedTask: []
+    selectedTask: [],
+    call: false,
+    callButton: false
   };
 
+  callInsert = () => {
+    this.setState({ call: true });
+  };
+  disableInserting = () =>
+    this.setState({
+      disableComponents: !this.state.disableComponents
+    });
+
+  disableEditing = () =>
+    this.setState({
+      call: !this.state.call
+    });
+
   componentDidMount() {
+    this.setState({ disableComponents: true, callButton: true });
     this.getTasks();
   }
 
@@ -28,13 +45,25 @@ class App extends Component {
   };
 
   render() {
-    const { tasks, loading } = this.state;
+    const { tasks, loading, disableComponents, call, callButton } = this.state;
     return (
       <React.Fragment>
         <Header title="Tasks" />
-        <Insert updateList={this.getTasks} />
+
+        {disableComponents && callButton && (
+          <button onClick={this.callInsert}>Add</button>
+        )}
+
+        {disableComponents && call && <Insert updateList={this.getTasks} />}
+
         {loading && <FaSpinner className="icon-spin" />}
-        <List updateList={this.getTasks} task={tasks.length > 0 && tasks} />
+
+        <List
+          updateList={this.getTasks}
+          task={tasks.length > 0 && tasks}
+          disable={() => this.disableInserting(disableComponents)}
+          callInsert={() => this.disableEditing(callButton)}
+        />
       </React.Fragment>
     );
   }

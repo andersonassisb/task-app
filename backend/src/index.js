@@ -83,31 +83,52 @@ app.get('/tasks/delete_all', async (req, res) => {
   });
 });
 
-app.post('/tasks/edit', async (req, res) => {
-  const { id } = req.body;
+app.post('/tasks/update', async (req, res) => {
+  const { _id, title, content, status } = req.body;
 
-  db.collection('task', (err, collection) => {
-    collection.updateOne({ _id: new mongo.ObjectId(id) }, (err, result) => {
-      if (!err) {
-        res.status(200);
-        res.json({ update: true });
-      } else {
-        res.status(400);
-        res.json({ update: false });
+  const updateTask = {
+    _id: _id ? _id : '',
+    title: title ? title : '',
+    content: content ? content : '',
+    status: status ? status : false
+  };
+
+  if (!updateTask.title) {
+    res.status(400);
+    res.json({ error: 'Task title undefined' });
+  } else {
+    db.collection('task').updateOne(
+      {
+        _id: new mongo.ObjectId(updateTask._id)
+      },
+      {
+        $set: {
+          title: updateTask.title,
+          content: updateTask.content,
+          status: updateTask.status
+        }
+      },
+      (err, result) => {
+        if (!err) {
+          res.status(200);
+          res.json({ updateTask: true });
+        } else {
+          res.status(400);
+          res.json({ updateTask: false });
+        }
       }
-    });
-  });
+    );
+  }
 });
 
-/*app.get('/tasks/:id', async (req, res) => {
-  const { id } = req.params.id;
+app.get('/tasks/:id', async (req, res) => {
   const taskDb = await db
     .collection('task')
-    .find()
+    .find({ _id: new mongo.ObjectId(req.params.id) })
     .toArray();
-  const taskReceived = taskDb.filter(task => task._id.includes(req.params.id));
-  console.log(taskReceived);
-});*/
+
+  if (taskDb) res.json(taskDb);
+});
 
 app.get('/tasks', async (req, res) => {
   const task = await db

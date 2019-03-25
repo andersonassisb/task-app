@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import swal from "sweetalert";
 import { FaRegWindowClose } from "react-icons/fa";
 import { FaRegEdit } from "react-icons/fa";
-import Edit from "./edit.js";
+import Edit from "./edit";
 
 class List extends Component {
   state = {
@@ -10,6 +10,8 @@ class List extends Component {
     id: ""
   };
   updateList = () => this.props.updateList();
+  hideComponentsWhenEditing = pass => this.props.disable(pass);
+  disableFunction = pass => this.props.callInsert(pass);
 
   deleteAllTasks = () => {
     fetch("http://localhost:3030/tasks/delete_all").then(response => {
@@ -65,6 +67,14 @@ class List extends Component {
   render() {
     return (
       <React.Fragment>
+        <div>
+          {this.state.id && (
+            <Edit
+              disable={() => this.disableFunction(true)}
+              editTask={this.state.id}
+            />
+          )}
+        </div>
         <div className="list">
           {this.props.task.length > 0 && (
             <div
@@ -100,6 +110,7 @@ class List extends Component {
                       <div
                         onClick={() => {
                           this.editTask(taskItem._id);
+                          this.hideComponentsWhenEditing(true);
                         }}
                       >
                         <FaRegEdit />
@@ -110,7 +121,6 @@ class List extends Component {
             </tbody>
           </table>
         </div>
-        <div>{this.state.id !== "" && <Edit editTask={this.state.id} />}</div>
       </React.Fragment>
     );
   }
