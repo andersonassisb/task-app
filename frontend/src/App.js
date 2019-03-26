@@ -5,6 +5,8 @@ import Insert from "./components/insert.js";
 import Edit from "./components/edit.js";
 import Header from "./components/header.js";
 import { FaSpinner } from "react-icons/fa";
+import { MdAdd } from "react-icons/md";
+import swal from "sweetalert";
 
 class App extends Component {
   state = {
@@ -15,7 +17,8 @@ class App extends Component {
     completedTasks: false,
     selectedTask: [],
     call: false,
-    callButton: false
+    callButton: false,
+    deleteAll: false
   };
 
   callInsert = () => {
@@ -36,6 +39,19 @@ class App extends Component {
     this.getTasks();
   }
 
+  deleteAllTasks = () => {
+    fetch("http://localhost:3030/tasks/delete_all").then(response => {
+      if (response.status !== 200) {
+        console.log("Problem encontred!");
+      } else {
+        swal("All tasks has been deleted!", {
+          icon: "success"
+        });
+        this.getTasks();
+      }
+    });
+  };
+
   getTasks = () => {
     this.setState({ loading: true });
 
@@ -45,15 +61,21 @@ class App extends Component {
   };
 
   render() {
-    const { tasks, loading, disableComponents, call, callButton } = this.state;
+    const {
+      tasks,
+      loading,
+      disableComponents,
+      call,
+      callButton,
+      deleteAll
+    } = this.state;
     return (
       <React.Fragment>
-        <Header title="Tasks" />
-
-        {disableComponents && callButton && (
-          <button onClick={this.callInsert}>Add</button>
-        )}
-
+        <Header
+          title="Tasks"
+          deleteAll={() => this.deleteAllTasks(deleteAll)}
+          addTask={disableComponents && callButton && this.callInsert}
+        />
         {disableComponents && call && <Insert updateList={this.getTasks} />}
 
         {loading && <FaSpinner className="icon-spin" />}

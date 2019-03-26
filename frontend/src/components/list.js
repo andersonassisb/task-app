@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import swal from "sweetalert";
-import { FaRegWindowClose } from "react-icons/fa";
-import { FaRegEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import { MdEdit } from "react-icons/md";
 import Edit from "./edit";
 
 class List extends Component {
@@ -76,50 +76,43 @@ class List extends Component {
           )}
         </div>
         <div className="list">
-          {this.props.task.length > 0 && (
-            <div
-              onClick={() => {
-                this.deleteAllTasks();
-              }}
-            >
-              <FaRegWindowClose />
-            </div>
-          )}
-          <table className="list-table">
-            <tbody>
-              {this.props.task &&
-                this.props.task.map((taskItem, i) => (
-                  <tr key={i}>
-                    <td className="task-status align-middle text-center" />
-                    <td className="task-title align-middle text-center">
-                      <p>{taskItem.title}</p>
-                    </td>
-                    <td className="task-content align-middle text-center">
-                      <p>{taskItem.content}</p>
-                    </td>
-                    <td className="task-img align-middle text-center">
-                      <div
-                        onClick={() => {
-                          this.deleteTask(taskItem._id);
-                        }}
-                      >
-                        <FaRegWindowClose />
-                      </div>
-                    </td>
-                    <td className="task-img align-middle text-center">
-                      <div
-                        onClick={() => {
-                          this.editTask(taskItem._id);
-                          this.hideComponentsWhenEditing(true);
-                        }}
-                      >
-                        <FaRegEdit />
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+          {this.props.task &&
+            this.props.task.map((taskItem, i) => (
+              <ul className="collection" key={i}>
+                <li className="collection-item avatar">
+                  <p>
+                    <label>
+                      <input
+                        className="with-gap"
+                        name="checkStatus"
+                        type="radio"
+                      />
+                      <span>grey</span>
+                    </label>
+                  </p>
+                  <span className="title">{taskItem.title}</span>
+                  <p>{taskItem.content}</p>
+
+                  <a href="#!" className="secondary-content">
+                    <div
+                      onClick={() => {
+                        this.deleteTask(taskItem._id);
+                      }}
+                    >
+                      <MdDelete />
+                    </div>
+                    <div
+                      onClick={() => {
+                        this.editTask(taskItem._id);
+                        this.hideComponentsWhenEditing(true);
+                      }}
+                    >
+                      <MdEdit />
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            ))}
         </div>
       </React.Fragment>
     );

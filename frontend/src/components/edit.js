@@ -79,7 +79,14 @@ class Edit extends Component {
                 placeholder="Description"
                 defaultValue={this.state.content}
               />
-              <button type="submit">Save</button>
+              <button
+                class="btn waves-effect waves-light grey"
+                type="submit"
+                name="action"
+              >
+                Save
+                <i class="material-icons right">send</i>
+              </button>
             </form>
           </div>
         )}
