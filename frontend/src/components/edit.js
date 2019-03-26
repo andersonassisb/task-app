@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { FaSpinner } from "react-icons/fa";
 import swal from "sweetalert";
 
 class Edit extends Component {
@@ -80,12 +79,12 @@ class Edit extends Component {
                 defaultValue={this.state.content}
               />
               <button
-                class="btn waves-effect waves-light grey"
+                className="btn waves-effect waves-light grey"
                 type="submit"
                 name="action"
               >
                 Save
-                <i class="material-icons right">send</i>
+                <i className="material-icons right">send</i>
               </button>
             </form>
           </div>

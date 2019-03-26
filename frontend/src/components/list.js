@@ -88,6 +88,9 @@ class List extends Component {
   render() {
     return (
       <React.Fragment>
+        {console.log(this.props.task)}
+        {console.log(this.props.status)}
+
         <div>
           {this.state.id && (
             <Edit
@@ -97,49 +100,53 @@ class List extends Component {
           )}
         </div>
         <div className="list">
-          {this.props.task &&
+          {this.props.task.length > 0 &&
             this.props.task.map(
               (taskItem, i) =>
                 taskItem.status === this.props.status && (
-                  <ul className="collection" key={i}>
-                    <li className="collection-item avatar">
-                      {this.props.status && (
-                        <p>
-                          <label>
-                            <input
-                              className="with-gap"
-                              name="checkStatus"
-                              type="checkbox"
-                              onChange={() => {
-                                this.statusDone(taskItem._id);
-                              }}
-                            />
-                            <span>grey</span>
-                          </label>
-                        </p>
-                      )}
-                      <span className="title">{taskItem.title}</span>
-                      <p>{taskItem.content}</p>
+                  <div key={i}>
+                    <ul className="collection">
+                      <li className="collection-item avatar">
+                        {this.props.status && (
+                          <p>
+                            <label>
+                              <input
+                                className="with-gap"
+                                name="checkStatus"
+                                type="checkbox"
+                                onChange={() => {
+                                  this.statusDone(taskItem._id);
+                                }}
+                              />
+                              <span>grey</span>
+                            </label>
+                          </p>
+                        )}
+                        <span className="title">{taskItem.title}</span>
+                        <p>{taskItem.content}</p>
 
-                      <a href="#!" className="secondary-content">
-                        <div
-                          onClick={() => {
-                            this.deleteTask(taskItem._id);
-                          }}
-                        >
-                          <MdDelete />
-                        </div>
-                        <div
-                          onClick={() => {
-                            this.editTask(taskItem._id);
-                            this.hideComponentsWhenEditing(true);
-                          }}
-                        >
-                          <MdEdit />
-                        </div>
-                      </a>
-                    </li>
-                  </ul>
+                        <a href="#!" className="secondary-content">
+                          <div
+                            onClick={() => {
+                              this.deleteTask(taskItem._id);
+                            }}
+                          >
+                            <MdDelete />
+                          </div>
+                          {this.props.status && (
+                            <div
+                              onClick={() => {
+                                this.editTask(taskItem._id);
+                                this.hideComponentsWhenEditing(true);
+                              }}
+                            >
+                              <MdEdit />
+                            </div>
+                          )}
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
                 )
             )}
         </div>

@@ -2,10 +2,8 @@ import React, { Component } from "react";
 import "./App.css";
 import List from "./components/list.js";
 import Insert from "./components/insert.js";
-import Edit from "./components/edit.js";
 import Header from "./components/header.js";
 import { FaSpinner } from "react-icons/fa";
-import { MdAdd } from "react-icons/md";
 import swal from "sweetalert";
 
 class App extends Component {
