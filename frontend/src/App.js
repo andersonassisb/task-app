@@ -18,7 +18,9 @@ class App extends Component {
     selectedTask: [],
     call: false,
     callButton: false,
-    deleteAll: false
+    deleteAll: false,
+    statusPass: true,
+    taskStatusChange: true
   };
 
   callInsert = () => {
@@ -33,6 +35,11 @@ class App extends Component {
     this.setState({
       call: !this.state.call
     });
+
+  status = pass => {
+    console.log(pass);
+    this.setState({ statusPass: pass });
+  };
 
   componentDidMount() {
     this.setState({ disableComponents: true, callButton: true });
@@ -52,6 +59,8 @@ class App extends Component {
     });
   };
 
+  statusChange = () => {};
+
   getTasks = () => {
     this.setState({ loading: true });
 
@@ -67,7 +76,8 @@ class App extends Component {
       disableComponents,
       call,
       callButton,
-      deleteAll
+      deleteAll,
+      statusPass
     } = this.state;
     return (
       <React.Fragment>
@@ -75,6 +85,7 @@ class App extends Component {
           title="Tasks"
           deleteAll={() => this.deleteAllTasks(deleteAll)}
           addTask={disableComponents && callButton && this.callInsert}
+          status={pass => this.status(pass)}
         />
         {disableComponents && call && <Insert updateList={this.getTasks} />}
 
@@ -85,6 +96,8 @@ class App extends Component {
           task={tasks.length > 0 && tasks}
           disable={() => this.disableInserting(disableComponents)}
           callInsert={() => this.disableEditing(callButton)}
+          status={statusPass && statusPass}
+          statusDone={taskStatusChange => this.statusChange(taskStatusChange)}
         />
       </React.Fragment>
     );

@@ -4,20 +4,21 @@ import { MdCheckCircle } from "react-icons/md";
 class Header extends Component {
   deleteAllTasks = pass => this.props.deleteAll(pass);
   addTask = () => this.props.addTask();
+  statusTask = pass => this.props.status(pass);
   render() {
     return (
-      <nav class="nav-extended navbar-fixed">
-        <div class="nav-wrapper blue">
-          <a href="#" class="brand-logo">
-            <i class="material-icons">
+      <nav className="nav-extended navbar-fixed">
+        <div className="nav-wrapper blue">
+          <a href="#" className="brand-logo">
+            <i className="material-icons">
               <MdCheckCircle />
             </i>
             {this.props.title}
           </a>
-          <ul class="right">
+          <ul className="right">
             <li>
               <a href="#">
-                <i class="material-icons">search</i>
+                <i className="material-icons">search</i>
               </a>
             </li>
             <li>
@@ -27,29 +28,44 @@ class Header extends Component {
                   this.deleteAllTasks(true);
                 }}
               >
-                <i class="material-icons">delete</i>
+                <i className="material-icons">delete</i>
               </a>
             </li>
           </ul>
         </div>
-        <div class="nav-content blue">
-          <ul class="tabs tabs-transparent">
-            <li class="tab">
-              <a href="#active">Today</a>
+        <div className="nav-content blue">
+          <ul className="tabs tabs-transparent">
+            <li className="tab">
+              <a
+                className="active"
+                href="#active"
+                onClick={() => {
+                  this.statusTask(true);
+                }}
+              >
+                Today
+              </a>
             </li>
-            <li class="tab">
-              <a class="active" href="#done">
+            <li className="tab">
+              <a
+                className="active"
+                href="#done"
+                onClick={() => {
+                  this.statusTask(false);
+                }}
+              >
                 Done
               </a>
             </li>
           </ul>
           <a
-            class="btn-floating btn-large halfway-fab waves-effect waves-light grey"
+            className="btn-floating btn-large halfway-fab waves-effect waves-light grey"
+            style={{ position: "fixed", bottom: "20px" }}
             onClick={() => {
               this.addTask();
             }}
           >
-            <i class="material-icons">add</i>
+            <i className="material-icons">add</i>
           </a>
         </div>
       </nav>

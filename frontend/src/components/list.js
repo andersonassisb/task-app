@@ -12,6 +12,7 @@ class List extends Component {
   updateList = () => this.props.updateList();
   hideComponentsWhenEditing = pass => this.props.disable(pass);
   disableFunction = pass => this.props.callInsert(pass);
+  statusDone = () => this.props.statusDone();
 
   deleteAllTasks = () => {
     fetch("http://localhost:3030/tasks/delete_all").then(response => {
@@ -67,6 +68,7 @@ class List extends Component {
   render() {
     return (
       <React.Fragment>
+        {console.log(this.props.status)}
         <div>
           {this.state.id && (
             <Edit
@@ -77,42 +79,49 @@ class List extends Component {
         </div>
         <div className="list">
           {this.props.task &&
-            this.props.task.map((taskItem, i) => (
-              <ul className="collection" key={i}>
-                <li className="collection-item avatar">
-                  <p>
-                    <label>
-                      <input
-                        className="with-gap"
-                        name="checkStatus"
-                        type="radio"
-                      />
-                      <span>grey</span>
-                    </label>
-                  </p>
-                  <span className="title">{taskItem.title}</span>
-                  <p>{taskItem.content}</p>
+            this.props.status &&
+            this.props.task.map(
+              (taskItem, i) =>
+                taskItem.status === this.props.status && (
+                  <ul className="collection" key={i}>
+                    <li className="collection-item avatar">
+                      <p>
+                        <label>
+                          <input
+                            className="with-gap"
+                            name="checkStatus"
+                            type="checkbox"
+                            onSelect={() => {
+                              this.statusDone();
+                            }}
+                          />
+                          <span>grey</span>
+                        </label>
+                      </p>
+                      <span className="title">{taskItem.title}</span>
+                      <p>{taskItem.content}</p>
 
-                  <a href="#!" className="secondary-content">
-                    <div
-                      onClick={() => {
-                        this.deleteTask(taskItem._id);
-                      }}
-                    >
-                      <MdDelete />
-                    </div>
-                    <div
-                      onClick={() => {
-                        this.editTask(taskItem._id);
-                        this.hideComponentsWhenEditing(true);
-                      }}
-                    >
-                      <MdEdit />
-                    </div>
-                  </a>
-                </li>
-              </ul>
-            ))}
+                      <a href="#!" className="secondary-content">
+                        <div
+                          onClick={() => {
+                            this.deleteTask(taskItem._id);
+                          }}
+                        >
+                          <MdDelete />
+                        </div>
+                        <div
+                          onClick={() => {
+                            this.editTask(taskItem._id);
+                            this.hideComponentsWhenEditing(true);
+                          }}
+                        >
+                          <MdEdit />
+                        </div>
+                      </a>
+                    </li>
+                  </ul>
+                )
+            )}
         </div>
       </React.Fragment>
     );

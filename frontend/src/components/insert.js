@@ -37,7 +37,7 @@ class Insert extends Component {
   render() {
     return (
       <React.Fragment>
-        <div className="insert">
+        <div className="insert" style={{ padding: "10px" }}>
           <form onSubmit={e => this.insertTask(e)}>
             <input
               type="text"
@@ -55,12 +55,13 @@ class Insert extends Component {
               placeholder="Description"
             />
             <button
-              class="btn waves-effect waves-light grey"
+              className="btn waves-effect waves-light grey"
+              style={{ width: "100%" }}
               type="submit"
               name="action"
             >
               Save
-              <i class="material-icons right">send</i>
+              <i className="material-icons right">send</i>
             </button>
           </form>
         </div>
