@@ -37,7 +37,6 @@ class App extends Component {
     });
 
   status = pass => {
-    console.log(pass);
     this.setState({ statusPass: pass });
   };
 

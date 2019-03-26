@@ -83,6 +83,39 @@ app.get('/tasks/delete_all', async (req, res) => {
   });
 });
 
+app.post('/tasks/status_done', async (req, res) => {
+  const { _id } = req.body;
+
+  const updateTask = {
+    status: false
+  };
+
+  if (!_id) {
+    res.status(400);
+    res.json({ error: 'Task undefined' });
+  } else {
+    db.collection('task').updateOne(
+      {
+        _id: new mongo.ObjectId(_id)
+      },
+      {
+        $set: {
+          status: updateTask.status
+        }
+      },
+      (err, result) => {
+        if (!err) {
+          res.status(200);
+          res.json({ updateStatus: true });
+        } else {
+          res.status(400);
+          res.json({ updateStatus: false });
+        }
+      }
+    );
+  }
+});
+
 app.post('/tasks/update', async (req, res) => {
   const { _id, title, content, status } = req.body;
 

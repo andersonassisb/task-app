@@ -12,7 +12,26 @@ class List extends Component {
   updateList = () => this.props.updateList();
   hideComponentsWhenEditing = pass => this.props.disable(pass);
   disableFunction = pass => this.props.callInsert(pass);
-  statusDone = () => this.props.statusDone();
+
+  statusDone = taskId => {
+    fetch("http://localhost:3030/tasks/status_done", {
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ _id: taskId })
+    }).then(response => {
+      if (response.status !== 200) {
+        console.log("Problem encontred!");
+      } else {
+        swal("Task completed!", {
+          icon: "success"
+        });
+        this.updateList();
+      }
+    });
+  };
 
   deleteAllTasks = () => {
     fetch("http://localhost:3030/tasks/delete_all").then(response => {
@@ -52,6 +71,7 @@ class List extends Component {
             swal("The task has been deleted!", {
               icon: "success"
             });
+            window.location.reload();
             this.updateList();
           }
         });
@@ -68,7 +88,6 @@ class List extends Component {
   render() {
     return (
       <React.Fragment>
-        {console.log(this.props.status)}
         <div>
           {this.state.id && (
             <Edit
@@ -79,25 +98,26 @@ class List extends Component {
         </div>
         <div className="list">
           {this.props.task &&
-            this.props.status &&
             this.props.task.map(
               (taskItem, i) =>
                 taskItem.status === this.props.status && (
                   <ul className="collection" key={i}>
                     <li className="collection-item avatar">
-                      <p>
-                        <label>
-                          <input
-                            className="with-gap"
-                            name="checkStatus"
-                            type="checkbox"
-                            onSelect={() => {
-                              this.statusDone();
-                            }}
-                          />
-                          <span>grey</span>
-                        </label>
-                      </p>
+                      {this.props.status && (
+                        <p>
+                          <label>
+                            <input
+                              className="with-gap"
+                              name="checkStatus"
+                              type="checkbox"
+                              onChange={() => {
+                                this.statusDone(taskItem._id);
+                              }}
+                            />
+                            <span>grey</span>
+                          </label>
+                        </p>
+                      )}
                       <span className="title">{taskItem.title}</span>
                       <p>{taskItem.content}</p>
 
