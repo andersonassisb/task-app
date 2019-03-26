@@ -7,11 +7,16 @@ import Edit from "./edit";
 class List extends Component {
   state = {
     tasks: [],
-    id: ""
+    id: "",
+    editing: false
   };
   updateList = () => this.props.updateList();
   hideComponentsWhenEditing = pass => this.props.disable(pass);
-  disableFunction = pass => this.props.callInsert(pass);
+
+  disableFunction = () => {
+    this.setState({ id: "" });
+    this.hideComponentsWhenEditing(true);
+  };
 
   statusDone = taskId => {
     fetch("http://localhost:3030/tasks/status_done", {
@@ -71,7 +76,7 @@ class List extends Component {
             swal("The task has been deleted!", {
               icon: "success"
             });
-            window.location.reload();
+            //window.location.reload();
             this.updateList();
           }
         });
@@ -82,34 +87,32 @@ class List extends Component {
   };
 
   editTask = taskId => {
-    this.setState({ id: taskId });
+    this.setState({ id: taskId, editing: true });
   };
 
   render() {
     return (
       <React.Fragment>
-        {console.log(this.props.task)}
-        {console.log(this.props.status)}
-
         <div>
           {this.state.id && (
             <Edit
-              disable={() => this.disableFunction(true)}
+              disable={pass => this.disableFunction(pass)}
               editTask={this.state.id}
             />
           )}
         </div>
-        <div className="list">
-          {this.props.task.length > 0 &&
-            this.props.task.map(
-              (taskItem, i) =>
-                taskItem.status === this.props.status && (
-                  <div key={i}>
-                    <ul className="collection">
-                      <li className="collection-item avatar">
-                        {this.props.status && (
-                          <p>
-                            <label>
+
+        {!this.state.editing && (
+          <React.Fragment>
+            <ul className="collapsible" style={{ marginTop: 0 }}>
+              {this.props.task.length > 0 &&
+                this.props.task.map(
+                  (taskItem, i) =>
+                    taskItem.status === this.props.status && (
+                      <li key={i}>
+                        <div className="collapsible-header">
+                          <label>
+                            {this.props.status && (
                               <input
                                 className="with-gap"
                                 name="checkStatus"
@@ -118,38 +121,49 @@ class List extends Component {
                                   this.statusDone(taskItem._id);
                                 }}
                               />
-                              <span>grey</span>
-                            </label>
-                          </p>
-                        )}
-                        <span className="title">{taskItem.title}</span>
-                        <p>{taskItem.content}</p>
+                            )}
+                            <span className="title">{taskItem.title}</span>
+                          </label>
+                        </div>
 
-                        <a href="#!" className="secondary-content">
-                          <div
-                            onClick={() => {
-                              this.deleteTask(taskItem._id);
-                            }}
-                          >
-                            <MdDelete />
-                          </div>
-                          {this.props.status && (
-                            <div
-                              onClick={() => {
-                                this.editTask(taskItem._id);
-                                this.hideComponentsWhenEditing(true);
-                              }}
-                            >
-                              <MdEdit />
+                        <div className="collapsible-body">
+                          <p>{taskItem.content}</p>
+
+                          <div className="row">
+                            {this.props.status && (
+                              <div className="col s6">
+                                <a
+                                  style={{ width: "100%" }}
+                                  className="waves-effect waves-light btn blue"
+                                  onClick={() => {
+                                    this.editTask(taskItem._id);
+                                    this.hideComponentsWhenEditing(false);
+                                  }}
+                                >
+                                  <MdEdit /> Edit Task
+                                </a>
+                              </div>
+                            )}
+
+                            <div className="col s6">
+                              <a
+                                style={{ width: "100%" }}
+                                className="waves-effect waves-light btn red"
+                                onClick={() => {
+                                  this.deleteTask(taskItem._id);
+                                }}
+                              >
+                                <MdDelete /> Delete Task
+                              </a>
                             </div>
-                          )}
-                        </a>
+                          </div>
+                        </div>
                       </li>
-                    </ul>
-                  </div>
-                )
-            )}
-        </div>
+                    )
+                )}
+            </ul>
+          </React.Fragment>
+        )}
       </React.Fragment>
     );
   }

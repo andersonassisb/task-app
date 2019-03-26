@@ -8,7 +8,10 @@ class Edit extends Component {
     content: "",
     pass: false
   };
-  hideComponentsWhenInserting = pass => this.props.disable(pass);
+
+  hideComponentsWhenInserting = pass => {
+    this.props.disable(pass);
+  };
 
   getTaskId = () => {
     this.setState({ id: this.props.editTask });
@@ -50,9 +53,11 @@ class Edit extends Component {
         } else {
           this.setState({ pass: true });
           swal("Updated task!").then(willConfirm => {
-            if (willConfirm) window.location.reload();
+            if (willConfirm) {
+              //window.location.reload();
+              this.hideComponentsWhenInserting(false);
+            }
           });
-          //this.hideComponentsWhenInserting(true);
         }
       });
   };
@@ -61,7 +66,7 @@ class Edit extends Component {
     return (
       <React.Fragment>
         {this.props.editTask && (
-          <div className="edit">
+          <div className="edit" style={{ padding: "10px" }}>
             <form onSubmit={e => this.updateTask(e)}>
               <input
                 type="text"
@@ -82,8 +87,9 @@ class Edit extends Component {
                 className="btn waves-effect waves-light grey"
                 type="submit"
                 name="action"
+                style={{ width: "100%" }}
               >
-                Save
+                Update
                 <i className="material-icons right">send</i>
               </button>
             </form>

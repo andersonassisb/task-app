@@ -24,14 +24,10 @@ class App extends Component {
   callInsert = () => {
     this.setState({ call: true });
   };
-  disableInserting = () =>
-    this.setState({
-      disableComponents: !this.state.disableComponents
-    });
 
-  disableEditing = () =>
+  disableInserting = disable =>
     this.setState({
-      call: !this.state.call
+      disableComponents: disable
     });
 
   status = pass => {
@@ -72,7 +68,6 @@ class App extends Component {
       loading,
       disableComponents,
       call,
-      callButton,
       deleteAll,
       statusPass
     } = this.state;
@@ -81,21 +76,33 @@ class App extends Component {
         <Header
           title="Tasks"
           deleteAll={() => this.deleteAllTasks(deleteAll)}
-          addTask={disableComponents && callButton && this.callInsert}
           status={pass => this.status(pass)}
         />
         {disableComponents && call && <Insert updateList={this.getTasks} />}
 
         {loading && <FaSpinner className="icon-spin" />}
 
-        <List
-          updateList={this.getTasks}
-          task={tasks.length > 0 && tasks}
-          disable={() => this.disableInserting(disableComponents)}
-          callInsert={() => this.disableEditing(callButton)}
-          status={statusPass && statusPass}
-          statusDone={taskStatusChange => this.statusChange(taskStatusChange)}
-        />
+        {!call && (
+          <List
+            updateList={this.getTasks}
+            task={tasks.length > 0 && tasks}
+            disable={disable => this.disableInserting(disable)}
+            status={statusPass && statusPass}
+            statusDone={taskStatusChange => this.statusChange(taskStatusChange)}
+          />
+        )}
+
+        {disableComponents && (
+          <a
+            className="btn-floating btn-large halfway-fab waves-effect waves-light grey"
+            style={{ position: "fixed", bottom: "20px" }}
+            onClick={() => {
+              this.callInsert();
+            }}
+          >
+            <i className="material-icons">add</i>
+          </a>
+        )}
       </React.Fragment>
     );
   }

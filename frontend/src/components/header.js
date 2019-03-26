@@ -3,7 +3,6 @@ import { MdCheckCircle } from "react-icons/md";
 
 class Header extends Component {
   deleteAllTasks = pass => this.props.deleteAll(pass);
-  addTask = () => this.props.addTask();
   statusTask = pass => this.props.status(pass);
   render() {
     return (
@@ -58,15 +57,6 @@ class Header extends Component {
               </a>
             </li>
           </ul>
-          <a
-            className="btn-floating btn-large halfway-fab waves-effect waves-light grey"
-            style={{ position: "fixed", bottom: "20px" }}
-            onClick={() => {
-              this.addTask();
-            }}
-          >
-            <i className="material-icons">add</i>
-          </a>
         </div>
       </nav>
     );
