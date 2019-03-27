@@ -6,11 +6,16 @@ class Edit extends Component {
     id: "",
     title: "",
     content: "",
-    pass: false
+    pass: false,
+    editing: true
   };
 
   hideComponentsWhenInserting = pass => {
     this.props.disable(pass);
+  };
+
+  leaveEditing = pass => {
+    this.props.leaveEditing(pass);
   };
 
   getTaskId = () => {
@@ -55,6 +60,7 @@ class Edit extends Component {
           swal("Updated task!").then(willConfirm => {
             if (willConfirm) {
               //window.location.reload();
+              this.leaveEditing(this.setState.editing);
               this.hideComponentsWhenInserting(false);
             }
           });

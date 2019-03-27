@@ -18,6 +18,15 @@ class List extends Component {
     this.hideComponentsWhenEditing(true);
   };
 
+  showList = () => {
+    this.setState({ editing: false });
+    //window.location.reload();
+  };
+
+  componentDidUpdate() {
+    window.$(".collapsible").collapsible();
+  }
+
   statusDone = taskId => {
     fetch("http://localhost:3030/tasks/status_done", {
       method: "post",
@@ -98,6 +107,7 @@ class List extends Component {
             <Edit
               disable={pass => this.disableFunction(pass)}
               editTask={this.state.id}
+              leaveEditing={pass => this.showList(pass)}
             />
           )}
         </div>
