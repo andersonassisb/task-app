@@ -3,6 +3,7 @@ import swal from "sweetalert";
 import { MdDelete } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
 import Edit from "./edit";
+import EmptyTask from "./empty-task.png";
 
 class List extends Component {
   state = {
@@ -10,6 +11,7 @@ class List extends Component {
     id: "",
     editing: false
   };
+  newTask = pass => this.props.newTask(pass);
   updateList = () => this.props.updateList();
   hideComponentsWhenEditing = pass => this.props.disable(pass);
 
@@ -109,73 +111,100 @@ class List extends Component {
               editTask={this.state.id}
               leaveEditing={pass => this.showList(pass)}
               updateList={this.updateList}
+              newTask={this.newTask}
             />
           )}
         </div>
         {!this.state.editing && (
           <React.Fragment>
-            {this.props.task.length > 0 && (
-              <ul className="collapsible" style={{ marginTop: 0 }}>
-                {this.props.task.length > 0 &&
-                  this.props.task.map(
-                    (taskItem, i) =>
-                      taskItem.status === this.props.status && (
-                        <li key={i}>
-                          <div className="collapsible-header">
-                            <label>
-                              {this.props.status && (
-                                <input
-                                  className="with-gap"
-                                  name="checkStatus"
-                                  type="checkbox"
-                                  onChange={() => {
-                                    this.statusDone(taskItem._id);
-                                  }}
-                                />
-                              )}
-                              <span className="title">{taskItem.title}</span>
-                            </label>
-                          </div>
+            {!this.props.loading &&
+              this.props.task &&
+              this.props.task.filter(task => task.status === this.props.status)
+                .length === 0 && (
+                <div>
+                  <img className="empty" src={EmptyTask} alt="Empty" />
+                  <p className="empty-text">
+                    {this.props.status === true
+                      ? "It looks like you have nothing to do today"
+                      : "Nothing done yet, hey!?"}
+                  </p>
+                </div>
+              )}
 
-                          <div className="collapsible-body">
-                            <p>{taskItem.content}</p>
+            {this.props.task &&
+              this.props.task.filter(task => task.status === this.props.status)
+                .length > 0 && (
+                <ul className="collapsible" style={{ marginTop: 0 }}>
+                  {this.props.task.length > 0 &&
+                    this.props.task.map(
+                      (taskItem, i) =>
+                        taskItem.status === this.props.status && (
+                          <li key={i}>
+                            <div className="collapsible-header">
+                              <label>
+                                {this.props.status && (
+                                  <input
+                                    className="with-gap"
+                                    name="checkStatus"
+                                    type="checkbox"
+                                    onChange={() => {
+                                      this.statusDone(taskItem._id);
+                                    }}
+                                  />
+                                )}
+                                {!this.props.status && (
+                                  <input
+                                    className="with-gap"
+                                    name="checkStatus"
+                                    type="checkbox"
+                                    disabled
+                                    defaultChecked={true}
+                                  />
+                                )}
+                                <span className="title">{taskItem.title}</span>
+                              </label>
+                            </div>
 
-                            <div className="row">
-                              {this.props.status && (
+                            <div className="collapsible-body">
+                              <p>{taskItem.content}</p>
+
+                              <div className="row">
+                                {this.props.status && (
+                                  <div className="col s6">
+                                    <a
+                                      href="#edit"
+                                      style={{ width: "100%" }}
+                                      className="waves-effect waves-light btn blue"
+                                      onClick={e => {
+                                        this.editTask(taskItem._id);
+                                        this.hideComponentsWhenEditing(false);
+                                        this.newTask(false);
+                                      }}
+                                    >
+                                      <MdEdit /> Edit Task
+                                    </a>
+                                  </div>
+                                )}
+
                                 <div className="col s6">
                                   <a
-                                    href="#edit"
+                                    href="#delete"
                                     style={{ width: "100%" }}
-                                    className="waves-effect waves-light btn blue"
+                                    className="waves-effect waves-light btn red"
                                     onClick={() => {
-                                      this.editTask(taskItem._id);
-                                      this.hideComponentsWhenEditing(false);
+                                      this.deleteTask(taskItem._id);
                                     }}
                                   >
-                                    <MdEdit /> Edit Task
+                                    <MdDelete /> Delete Task
                                   </a>
                                 </div>
-                              )}
-
-                              <div className="col s6">
-                                <a
-                                  href="#delete"
-                                  style={{ width: "100%" }}
-                                  className="waves-effect waves-light btn red"
-                                  onClick={() => {
-                                    this.deleteTask(taskItem._id);
-                                  }}
-                                >
-                                  <MdDelete /> Delete Task
-                                </a>
                               </div>
                             </div>
-                          </div>
-                        </li>
-                      )
-                  )}
-              </ul>
-            )}
+                          </li>
+                        )
+                    )}
+                </ul>
+              )}
           </React.Fragment>
         )}
       </React.Fragment>

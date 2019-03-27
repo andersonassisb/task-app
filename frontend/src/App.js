@@ -18,6 +18,7 @@ class App extends Component {
     filteredTask: false,
     selectedTask: [],
     call: false,
+    callEdit: false,
     callButton: false,
     deleteAll: false,
     statusPass: true,
@@ -26,6 +27,10 @@ class App extends Component {
 
   callInsert = () => {
     this.setState({ call: true });
+  };
+
+  edit = pass => {
+    this.setState({ callEdit: !pass });
   };
 
   disableInserting = disable =>
@@ -62,7 +67,13 @@ class App extends Component {
 
     fetch("http://localhost:3030/tasks")
       .then(response => response.json())
-      .then(tasks => this.setState({ tasks, loading: false }));
+      .then(tasks => {
+        if (tasks.length) {
+          this.setState({ tasks, loading: false });
+        } else {
+          this.setState({ tasks: [], loading: false });
+        }
+      });
   };
 
   filterTask = e => {
@@ -86,49 +97,58 @@ class App extends Component {
       deleteAll,
       filteredTask,
       selectedTask,
-      statusPass
+      statusPass,
+      callEdit
     } = this.state;
     return (
       <React.Fragment>
         <Header
-          title="Tasks"
+          title="Taskaryen"
           deleteAll={() => this.deleteAllTasks(deleteAll)}
           status={pass => this.status(pass)}
           newTask={call}
         />
 
-        {!call && (
-          <Search
-            handleChange={e => {
-              this.filterTask(e);
-            }}
-          />
+        {!call && !callEdit && (
+          <div className="search-nav">
+            <Search
+              handleChange={e => {
+                this.filterTask(e);
+              }}
+              callEdit={callEdit}
+            />
+          </div>
         )}
 
         {filteredTask && <NotFound show={selectedTask.length === 0 && true} />}
 
         {disableComponents && call && <Insert updateList={this.getTasks} />}
 
-        {loading && <FaSpinner className="icon-spin" />}
+        {loading && (
+          <div>
+            <FaSpinner className="icon-spin loading" />
+            <p className="empty-text">Loading what to do...</p>
+          </div>
+        )}
 
         {!call && (
           <List
             updateList={this.getTasks}
             task={
-              selectedTask.length > 0
-                ? selectedTask
-                : !filteredTask && tasks.length > 0 && tasks
+              selectedTask.length > 0 ? selectedTask : !filteredTask && tasks
             }
             disable={disable => this.disableInserting(disable)}
             status={statusPass && statusPass}
             statusDone={taskStatusChange => this.statusChange(taskStatusChange)}
+            newTask={pass => this.edit(pass)}
+            loading={loading}
           />
         )}
 
         {disableComponents && (
           <a
             href="#callinsert"
-            className="btn-floating btn-large halfway-fab waves-effect waves-light grey"
+            className="btn-floating btn-large halfway-fab waves-effect waves-light blue"
             style={{ position: "fixed", bottom: "20px" }}
             onClick={() => {
               this.callInsert();

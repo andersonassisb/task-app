@@ -9,7 +9,7 @@ class Edit extends Component {
     pass: false,
     editing: true
   };
-
+  newTask = pass => this.props.newTask(pass);
   hideComponentsWhenInserting = pass => {
     this.props.disable(pass);
   };
@@ -64,6 +64,7 @@ class Edit extends Component {
               //window.location.reload();
               this.leaveEditing(this.setState.editing);
               this.hideComponentsWhenInserting(false);
+              this.newTask(true);
               this.updateList();
             }
           });

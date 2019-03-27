@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { MdCheckCircle } from "react-icons/md";
 
 class Header extends Component {
   deleteAllTasks = pass => this.props.deleteAll(pass);
@@ -65,7 +64,7 @@ class Header extends Component {
                   Add New Task
                 </a>
               </li>
-              <li class="indicator" style={{ left: "0px", right: "0px" }} />
+              <li className="indicator" style={{ left: "0px", right: "0px" }} />
             </ul>
           </div>
         )}
