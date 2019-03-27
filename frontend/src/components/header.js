@@ -8,21 +8,13 @@ class Header extends Component {
     return (
       <nav className="nav-extended navbar-fixed">
         <div className="nav-wrapper blue">
-          <a href="#" className="brand-logo">
-            <i className="material-icons">
-              <MdCheckCircle />
-            </i>
+          <a href="#logo" className="brand-logo">
             {this.props.title}
           </a>
           <ul className="right">
             <li>
-              <a href="#">
-                <i className="material-icons">search</i>
-              </a>
-            </li>
-            <li>
               <a
-                href="#"
+                href="#delete"
                 onClick={() => {
                   this.deleteAllTasks(true);
                 }}
@@ -32,32 +24,51 @@ class Header extends Component {
             </li>
           </ul>
         </div>
-        <div className="nav-content blue">
-          <ul className="tabs tabs-transparent">
-            <li className="tab">
-              <a
-                className="active"
-                href="#active"
-                onClick={() => {
-                  this.statusTask(true);
-                }}
-              >
-                Today
-              </a>
-            </li>
-            <li className="tab">
-              <a
-                className="active"
-                href="#done"
-                onClick={() => {
-                  this.statusTask(false);
-                }}
-              >
-                Done
-              </a>
-            </li>
-          </ul>
-        </div>
+        {!this.props.newTask ? (
+          <div className="nav-content blue">
+            <ul className="tabs tabs-transparent">
+              <li className="tab">
+                <a
+                  className="active"
+                  href="#active"
+                  onClick={() => {
+                    this.statusTask(true);
+                  }}
+                >
+                  Today
+                </a>
+              </li>
+              <li className="tab">
+                <a
+                  className="active"
+                  href="#done"
+                  onClick={() => {
+                    this.statusTask(false);
+                  }}
+                >
+                  Done
+                </a>
+              </li>
+            </ul>
+          </div>
+        ) : (
+          <div className="nav-content blue">
+            <ul className="tabs tabs-transparent">
+              <li className="tab">
+                <a
+                  className="active"
+                  href="#active"
+                  onClick={() => {
+                    this.statusTask(true);
+                  }}
+                >
+                  Add New Task
+                </a>
+              </li>
+              <li class="indicator" style={{ left: "0px", right: "0px" }} />
+            </ul>
+          </div>
+        )}
       </nav>
     );
   }

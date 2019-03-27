@@ -14,6 +14,8 @@ class Edit extends Component {
     this.props.disable(pass);
   };
 
+  updateList = () => this.props.updateList();
+
   leaveEditing = pass => {
     this.props.leaveEditing(pass);
   };
@@ -62,6 +64,7 @@ class Edit extends Component {
               //window.location.reload();
               this.leaveEditing(this.setState.editing);
               this.hideComponentsWhenInserting(false);
+              this.updateList();
             }
           });
         }

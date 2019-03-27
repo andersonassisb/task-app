@@ -5,6 +5,8 @@ import Insert from "./components/insert.js";
 import Header from "./components/header.js";
 import { FaSpinner } from "react-icons/fa";
 import swal from "sweetalert";
+import Search from "./components/search";
+import NotFound from "./components/notfound";
 
 class App extends Component {
   state = {
@@ -13,6 +15,7 @@ class App extends Component {
     tasks: [],
     activedTasks: false,
     completedTasks: false,
+    filteredTask: false,
     selectedTask: [],
     call: false,
     callButton: false,
@@ -62,6 +65,18 @@ class App extends Component {
       .then(tasks => this.setState({ tasks, loading: false }));
   };
 
+  filterTask = e => {
+    if (e.target.value.length > 0) {
+      this.setState({ filteredTask: true });
+      const selectTask = this.state.tasks.filter(task =>
+        task.title.toLowerCase().match(e.target.value.toLowerCase())
+      );
+      this.setState({ selectedTask: selectTask });
+    } else {
+      this.setState({ selectedTask: [], filteredTask: false });
+    }
+  };
+
   render() {
     const {
       tasks,
@@ -69,6 +84,8 @@ class App extends Component {
       disableComponents,
       call,
       deleteAll,
+      filteredTask,
+      selectedTask,
       statusPass
     } = this.state;
     return (
@@ -77,7 +94,19 @@ class App extends Component {
           title="Tasks"
           deleteAll={() => this.deleteAllTasks(deleteAll)}
           status={pass => this.status(pass)}
+          newTask={call}
         />
+
+        {!call && (
+          <Search
+            handleChange={e => {
+              this.filterTask(e);
+            }}
+          />
+        )}
+
+        {filteredTask && <NotFound show={selectedTask.length === 0 && true} />}
+
         {disableComponents && call && <Insert updateList={this.getTasks} />}
 
         {loading && <FaSpinner className="icon-spin" />}
@@ -85,7 +114,11 @@ class App extends Component {
         {!call && (
           <List
             updateList={this.getTasks}
-            task={tasks.length > 0 && tasks}
+            task={
+              selectedTask.length > 0
+                ? selectedTask
+                : !filteredTask && tasks.length > 0 && tasks
+            }
             disable={disable => this.disableInserting(disable)}
             status={statusPass && statusPass}
             statusDone={taskStatusChange => this.statusChange(taskStatusChange)}
@@ -94,6 +127,7 @@ class App extends Component {
 
         {disableComponents && (
           <a
+            href="#callinsert"
             className="btn-floating btn-large halfway-fab waves-effect waves-light grey"
             style={{ position: "fixed", bottom: "20px" }}
             onClick={() => {

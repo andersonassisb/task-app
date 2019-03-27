@@ -67,6 +67,38 @@
         $(".tabs").tabs();
         $(".collapsible").collapsible();
       });
+      $(document).ready(function() {
+        var trig = 1;
+
+        //animate searchbar width increase to  +150%
+        $("#navbarsearch").click(function(e) {
+          if (trig == 1) {
+            $("#expandtrigger").animate(
+              {
+                width: "+=150"
+              },
+              400
+            );
+            trig++;
+          }
+          //handle other nav elements visibility here
+          $(".search-hide").addClass("hide");
+        });
+
+        // if user leaves the form the width will go back to original state
+
+        $("#navbarsearch").focusout(function() {
+          $("#expandtrigger").animate(
+            {
+              width: "-=150"
+            },
+            400
+          );
+          trig = trig - 1;
+          //handle other nav elements visibility here
+          $(".search-hide").removeClass("hide");
+        });
+      });
     </script>
   </body>
 </html>
